@@ -16,7 +16,9 @@ fun NavigationView(feature: NavigationFeature) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             BoxWithConstraints(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                DrawingCanvas(recognitionService = koinInject())
+                Box(modifier = Modifier.fillMaxSize(.5f).aspectRatio(1f), contentAlignment = Alignment.Center) {
+                    DrawingCanvas(recognitionService = koinInject())
+                }
             }
         }
     }
