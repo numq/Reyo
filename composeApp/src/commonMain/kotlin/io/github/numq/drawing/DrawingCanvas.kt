@@ -12,8 +12,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
@@ -34,16 +34,38 @@ fun DrawingCanvas(
 
     val points = remember { mutableStateListOf<Offset>() }
 
+    val drawContent: DrawScope.() -> Unit = {
+        paths.forEach { path ->
+            drawPath(
+                path = path,
+                color = if (mode == DrawingMode.DRAW) Color.Black else Color.White,
+                style = Stroke(width = strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
+            )
+        }
+
+        if (points.isNotEmpty()) {
+            drawPath(
+                path = Path().apply {
+                    points.forEachIndexed { index, (x, y) ->
+                        if (index == 0) {
+                            moveTo(x, y)
+                        }
+
+                        lineTo(x, y)
+                    }
+                },
+                color = if (mode == DrawingMode.DRAW) Color.Black else Color.White,
+                style = Stroke(width = strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
+            )
+        }
+    }
+
     BoxWithConstraints(modifier = modifier) {
         val canvasSize = remember(maxWidth, maxHeight) {
             Size(maxWidth.value, maxHeight.value)
         }
 
-        val canvasBitmap = remember(canvasSize) {
-            ImageBitmap(canvasSize.width.toInt(), canvasSize.height.toInt())
-        }
-
-        Box(modifier = Modifier.fillMaxSize().pointerInput(Unit) {
+        Box(modifier = Modifier.fillMaxSize().pointerInput(canvasSize) {
             detectDragGestures(onDragStart = { offset ->
                 points.add(offset)
             }, onDrag = { change, _ ->
@@ -65,44 +87,28 @@ fun DrawingCanvas(
                     paths.add(path)
 
                     points.clear()
-                }
 
-                onContentChange(canvasBitmap.toPixelMap().buffer)
-            })
-        }) {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                drawIntoCanvas { canvas ->
+                    val bitmap = ImageBitmap(canvasSize.width.toInt(), canvasSize.height.toInt())
+
+                    val canvas = Canvas(bitmap)
+
                     canvasDrawScope.draw(
                         density = Density(1f),
                         layoutDirection = LayoutDirection.Ltr,
                         canvas = canvas,
                         size = canvasSize,
                     ) {
-                        paths.forEach { path ->
-                            drawPath(
-                                path = path,
-                                color = if (mode == DrawingMode.DRAW) Color.Black else Color.White,
-                                style = Stroke(width = strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            )
-                        }
+                        drawRect(color = Color.White)
 
-                        if (points.isNotEmpty()) {
-                            drawPath(
-                                path = Path().apply {
-                                    points.forEachIndexed { index, (x, y) ->
-                                        if (index == 0) {
-                                            moveTo(x, y)
-                                        }
-
-                                        lineTo(x, y)
-                                    }
-                                },
-                                color = if (mode == DrawingMode.DRAW) Color.Black else Color.White,
-                                style = Stroke(width = strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            )
-                        }
+                        drawContent()
                     }
+
+                    onContentChange(bitmap.toPixelMap().buffer)
                 }
+            })
+        }) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawContent()
             }
         }
     }

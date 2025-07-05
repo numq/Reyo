@@ -13,7 +13,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -43,27 +43,36 @@ fun TextReference(modifier: Modifier, text: String, onContentChange: (IntArray) 
             )
         }
 
-        val canvasBitmap = remember(canvasSize) {
-            ImageBitmap(canvasSize.width.toInt(), canvasSize.height.toInt())
+        val drawContent: DrawScope.() -> Unit = {
+            drawText(
+                textLayoutResult = textLayoutResult, topLeft = Offset(
+                    x = size.width / 2 - textLayoutResult.size.width / 2f,
+                    y = size.height / 2 - textLayoutResult.size.height / 2f
+                )
+            )
         }
 
-        LaunchedEffect(canvasBitmap) {
-            onContentChange(canvasBitmap.toPixelMap().buffer)
+        LaunchedEffect(canvasSize, text) {
+            val bitmap = ImageBitmap(canvasSize.width.toInt(), canvasSize.height.toInt())
+
+            val canvas = androidx.compose.ui.graphics.Canvas(bitmap)
+
+            canvasDrawScope.draw(
+                density = Density(1f),
+                layoutDirection = LayoutDirection.Ltr,
+                canvas = canvas,
+                size = canvasSize
+            ) {
+                drawRect(color = Color.White)
+
+                drawContent()
+            }
+
+            onContentChange(bitmap.toPixelMap().buffer)
         }
 
         Canvas(modifier = Modifier.fillMaxSize()) {
-            drawIntoCanvas { canvas ->
-                canvasDrawScope.draw(
-                    density = Density(1f), layoutDirection = LayoutDirection.Ltr, canvas = canvas, size = canvasSize
-                ) {
-                    drawText(
-                        textLayoutResult = textLayoutResult, topLeft = Offset(
-                            x = size.width / 2 - textLayoutResult.size.width / 2f,
-                            y = size.height / 2 - textLayoutResult.size.height / 2f
-                        )
-                    )
-                }
-            }
+            drawContent()
         }
     }
 }
