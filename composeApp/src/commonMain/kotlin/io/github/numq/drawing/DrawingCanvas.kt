@@ -45,15 +45,7 @@ fun DrawingCanvas(
 
         if (points.isNotEmpty()) {
             drawPath(
-                path = Path().apply {
-                    points.forEachIndexed { index, (x, y) ->
-                        if (index == 0) {
-                            moveTo(x, y)
-                        }
-
-                        lineTo(x, y)
-                    }
-                },
+                path = buildPath(points),
                 color = if (mode == DrawingMode.DRAW) Color.Black else Color.White,
                 style = Stroke(width = strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
             )
@@ -74,15 +66,7 @@ fun DrawingCanvas(
                 change.consume()
             }, onDragEnd = {
                 if (points.isNotEmpty()) {
-                    val path = Path().apply {
-                        points.forEachIndexed { index, (x, y) ->
-                            if (index == 0) {
-                                moveTo(x, y)
-                            }
-
-                            lineTo(x, y)
-                        }
-                    }
+                    val path = buildPath(points)
 
                     paths.add(path)
 
@@ -111,5 +95,11 @@ fun DrawingCanvas(
                 drawContent()
             }
         }
+    }
+}
+
+private fun buildPath(points: List<Offset>) = Path().apply {
+    points.forEachIndexed { index, (x, y) ->
+        if (index == 0) moveTo(x, y) else lineTo(x, y)
     }
 }
