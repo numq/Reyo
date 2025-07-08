@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -58,17 +57,20 @@ fun TextReference(modifier: Modifier, text: String, onContentChange: (IntArray) 
             val canvas = androidx.compose.ui.graphics.Canvas(bitmap)
 
             canvasDrawScope.draw(
-                density = Density(1f),
-                layoutDirection = LayoutDirection.Ltr,
-                canvas = canvas,
-                size = canvasSize
+                density = Density(1f), layoutDirection = LayoutDirection.Ltr, canvas = canvas, size = canvasSize
             ) {
-                drawRect(color = Color.White)
-
                 drawContent()
             }
 
-            onContentChange(bitmap.toPixelMap().buffer)
+            val pixels = IntArray(bitmap.width * bitmap.height)
+
+            bitmap.readPixels(pixels)
+
+            for (i in pixels.indices) {
+                pixels[i] = pixels[i] and 0x00FFFFFF
+            }
+
+            onContentChange(pixels)
         }
 
         Canvas(modifier = Modifier.fillMaxSize()) {

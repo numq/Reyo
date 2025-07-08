@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.LayoutDirection
 fun DrawingCanvas(
     modifier: Modifier,
     initialMode: DrawingMode = DrawingMode.DRAW,
-    strokeWidth: Float = 8f,
+    strokeWidth: Float = 16f,
     onContentChange: (IntArray) -> Unit
 ) {
     val canvasDrawScope = remember { CanvasDrawScope() }
@@ -82,12 +82,18 @@ fun DrawingCanvas(
                         canvas = canvas,
                         size = canvasSize,
                     ) {
-                        drawRect(color = Color.White)
-
                         drawContent()
                     }
 
-                    onContentChange(bitmap.toPixelMap().buffer)
+                    val pixels = IntArray(bitmap.width * bitmap.height)
+
+                    bitmap.readPixels(pixels)
+
+                    for (i in pixels.indices) {
+                        pixels[i] = pixels[i] and 0x00FFFFFF
+                    }
+
+                    onContentChange(pixels)
                 }
             })
         }) {
