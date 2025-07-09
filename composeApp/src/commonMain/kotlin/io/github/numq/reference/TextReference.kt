@@ -59,6 +59,8 @@ fun TextReference(modifier: Modifier, text: String, onContentChange: (IntArray) 
             canvasDrawScope.draw(
                 density = Density(1f), layoutDirection = LayoutDirection.Ltr, canvas = canvas, size = canvasSize
             ) {
+                drawRect(color = Color.White)
+
                 drawContent()
             }
 

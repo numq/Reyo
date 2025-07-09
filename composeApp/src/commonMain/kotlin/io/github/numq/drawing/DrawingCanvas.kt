@@ -82,6 +82,8 @@ fun DrawingCanvas(
                         canvas = canvas,
                         size = canvasSize,
                     ) {
+                        drawRect(color = Color.White)
+
                         drawContent()
                     }
 
