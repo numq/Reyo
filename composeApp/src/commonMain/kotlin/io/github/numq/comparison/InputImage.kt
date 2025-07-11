@@ -1,4 +1,4 @@
-package io.github.numq.recognition
+package io.github.numq.comparison
 
 data class InputImage(val bytes: ByteArray, val width: Int, val height: Int, val channels: Int) {
     override fun equals(other: Any?): Boolean {
