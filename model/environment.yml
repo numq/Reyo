@@ -1,0 +1,22 @@
+name: reyo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy=1.23.5
+  - opencv
+  - pillow
+  - matplotlib
+  - pandas
+  - tqdm
+  - cudatoolkit=11.2
+  - cudnn=8.1
+  - pip
+  - pip:
+      - tensorflow==2.10.0
+      - keras
+      - albumentations
+      - onnx
+      - tf2onnx
+      - onnxruntime
