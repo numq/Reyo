@@ -3,20 +3,16 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.10
-  - numpy=1.23.5
-  - opencv
-  - pillow
-  - matplotlib
-  - pandas
-  - tqdm
-  - cudatoolkit=11.2
-  - cudnn=8.1
-  - pip
+  - python=3.8.18
+  - numpy=1.21.6
+  - opencv=4.5.5
+  - scikit-learn=1.0.2
+  - pip=21.3.1
   - pip:
       - tensorflow==2.10.0
-      - keras
-      - albumentations
-      - onnx
-      - tf2onnx
-      - onnxruntime
+      - tf2onnx==1.14.0
+      - onnx==1.14.0
+      - onnxruntime-gpu==1.14.1
+      - albumentations==1.2.1
+      - protobuf==3.20.3
+      - flatbuffers==2.0
