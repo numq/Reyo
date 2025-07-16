@@ -9,10 +9,10 @@ dependencies:
   - scikit-learn=1.0.2
   - pip=21.3.1
   - pip:
-      - tensorflow==2.10.0
-      - tf2onnx==1.14.0
-      - onnx==1.14.0
-      - onnxruntime-gpu==1.14.1
+      - tensorflow==2.10.1
+      - tf2onnx==1.13.0
+      - onnx==1.12.0
+      - onnxruntime-gpu==1.12.0
       - albumentations==1.2.1
-      - protobuf==3.20.3
+      - protobuf==3.19.6
       - flatbuffers==2.0
