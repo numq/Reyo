@@ -26,7 +26,8 @@ transform = A.Compose([
     A.Blur(),
     A.Downscale(),
     A.GaussNoise(),
-    A.OpticalDistortion()
+    A.OpticalDistortion(),
+    A.Rotate(limit=15)
 ])
 
 if os.path.exists(output_dir):
