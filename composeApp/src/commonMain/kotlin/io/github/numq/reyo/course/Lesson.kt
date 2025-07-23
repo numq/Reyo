@@ -1,4 +1,4 @@
-package io.github.numq.course
+package io.github.numq.reyo.course
 
 sealed interface Lesson {
     val id: String

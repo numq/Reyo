@@ -1,4 +1,4 @@
-package io.github.numq.course
+package io.github.numq.reyo.course
 
 data class Course(
     val id: String,
