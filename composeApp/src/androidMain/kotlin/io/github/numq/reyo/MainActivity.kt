@@ -1,4 +1,4 @@
-package io.github.numq
+package io.github.numq.reyo
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
